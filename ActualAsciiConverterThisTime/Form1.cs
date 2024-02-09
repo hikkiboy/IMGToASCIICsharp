@@ -11,11 +11,11 @@ namespace ActualAsciiConverterThisTime
         private void button1_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Image Files(*.jpg; *.jpeg; *.png; *.bmp)| *.jpg; *.jpeg; *.gif; *.bmp";
+            ofd.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp";
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                Bitmap bitmap = new Bitmap(ofd.FileName);
+                pictureBox1.Image = new Bitmap(ofd.FileName);
                 AsciiConvert();
 
             }
@@ -25,14 +25,17 @@ namespace ActualAsciiConverterThisTime
 
         public void AsciiConvert()
         {
-            var img = new Bitmap("C:\\Users\\hikki\\Desktop\\neco.jpg");
+            var temp = (Bitmap)pictureBox1.Image;
+            Bitmap bmap = (Bitmap)temp.Clone();
+
+            //var img = new Bitmap("C:\\Users\\hikki\\Desktop\\neco.jpg");
             using (var wrtr = new StreamWriter("C:\\Users\\hikki\\Desktop\\OUTPUT.txt"))
             {
-                for (var i = 0; i < img.Width; i++)
+                for (var i = 0; i < bmap.Width; i++)
                 {
-                    for (var j = 0; j < img.Height; j++)
+                    for (var j = 0; j < bmap.Height; j++)
                     {
-                        var color = img.GetPixel(i, j);
+                        var color = bmap.GetPixel(i, j);
                         var bright = Brightness(color);
                         var idx = bright / 255 * (pixels.Length - 1);
                         var pxl = pixels[(int)Math.Round(idx)];
@@ -41,7 +44,7 @@ namespace ActualAsciiConverterThisTime
 
                     }
                     wrtr.WriteLine();
-                    pictureBox2.Image = (Bitmap)img;
+                    pictureBox2.Image = (Bitmap)bmap;
                 }
             };
 
